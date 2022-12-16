@@ -1,7 +1,9 @@
+import MovieCard from 'components/movie/MovieCard';
 import { func } from 'prop-types';
 import React from 'react';
 import { Fragment } from 'react';
 import { useParams } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import useSWR from 'swr';
 import { apiKey, fetcher } from '../config';
 
@@ -47,6 +49,7 @@ const MovieDetailsPage = () => {
       <p className="text-center leading-relaxed max-w-[600px] mx-auto mb-10">{overview}</p>
       <MovieCredits></MovieCredits>
       <MovieVideos></MovieVideos>
+      <MovieSimilar></MovieSimilar>
     </div>
   );
 };
@@ -62,7 +65,7 @@ function MovieCredits() {
 
   // https://api.themoviedb.org/3/movie/{movie_id}/credits?api_key=
   return (
-    <div className="py-10">
+    <div className="py-10 page-container">
       <h2 className="text-center text-3xl font-bold mb-10">Casts</h2>
       <div className="grid grid-cols-4 gap-5">
         {cast.length > 0 &&
@@ -87,10 +90,60 @@ function MovieVideos() {
     `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}`,
     fetcher,
   );
-  if (!data) return null;
-  console.log('🚀 ~ data', data);
-  return <div></div>;
+  if (!data || !data.results) return null;
+  const { results } = data;
+
+  return (
+    <div className="py-10 page-container">
+      <h2 className="text-center text-3xl font-bold mb-10">Trailer Movie</h2>
+      <div className="flex flex-col gap-10">
+        {results.slice(0, 2).map((item) => (
+          <div className="" key={item.id}>
+            <h3 className="mb-5 text-xl font-medium p-3 bg-secondary inline-block">{item.name}</h3>
+            <div className="w-full aspect-auto">
+              <iframe
+                width="1522"
+                height="581"
+                src={`https://www.youtube.com/embed/${item.key}`}
+                title="20th Century Girl | Official Trailer | Netflix [Việt SUB CC]"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full  object-fill"
+              ></iframe>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
+
+function MovieSimilar() {
+  const { movieId } = useParams({});
+  const { data } = useSWR(
+    `https://api.themoviedb.org/3/movie/${movieId}/similar?api_key=${apiKey}`,
+    fetcher,
+  );
+  if (!data || !data.results) return null;
+  const { results } = data;
+
+  return (
+    <div className="py-10 page-container">
+      <h2 className="text-3xl text-center font-medium mb-10">Similar Movie</h2>
+      <div className="movies-list">
+        <Swiper grabCursor={true} spaceBetween={25} slidesPerView={'auto'}>
+          {results.length > 0 &&
+            results.map((item, index) => (
+              <SwiperSlide key={item.id}>
+                <MovieCard item={item}></MovieCard>
+              </SwiperSlide>
+            ))}
+        </Swiper>
+      </div>
+    </div>
+  );
+}
+
 // <iframe width="1522" height="581" src="https://www.youtube.com/embed/KFS4_qevE7M" title="20th Century Girl | Official Trailer | Netflix [Việt SUB CC]" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 export default MovieDetailsPage;
-// 217

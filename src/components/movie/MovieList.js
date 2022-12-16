@@ -16,7 +16,7 @@ const MovieList = ({ type = 'now_playing' }) => {
 
   return (
     <div className="movies-list">
-      <Swiper grabCursor={true} spaceBetween={40} slidesPerView={'auto'}>
+      <Swiper grabCursor={true} spaceBetween={25} slidesPerView={'auto'}>
         {movies.length > 0 &&
           movies.map((item, index) => (
             <SwiperSlide key={item.id}>
