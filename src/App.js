@@ -9,7 +9,7 @@ import 'swiper/scss';
 
 const HomePage = lazy(() => import('page/HomePage'));
 const MovieDetailsPage = lazy(() => import('page/MovieDetailsPage'));
-const MoviePage = lazy(() => import('page/MoviePage'));
+const MoviePageV2 = lazy(() => import('page/MoviePageV2'));
 
 const App = () => {
   return (
@@ -26,8 +26,9 @@ const App = () => {
                 </>
               }
             ></Route>
-            <Route path="/movies" element={<MoviePage />}></Route>
+            <Route path="/movies" element={<MoviePageV2 />}></Route>
             <Route path="/movie/:movieId" element={<MovieDetailsPage />}></Route>
+            <Route path="*" element={<>Not found</>}></Route>
           </Route>
         </Routes>
       </Fragment>
